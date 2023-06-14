@@ -1,8 +1,8 @@
 # minizip-ng
 
-private clone, for fix exporting symbols of shared object.
+A private clone, for fix exporting symbols of shared object.
 
-minizip-ng is a zip manipulation library written in C that is supported on Windows, macOS, and Linux.
+'minizip-ng' is a zip manipulation library written in C that is supported on Windows, macOS, and Linux.
 
 Developed and maintained by Nathan Moinvaziri.
 
@@ -12,14 +12,15 @@ Forked, modified version by Raphael Kim.
 
 4.0.0.0
 
-## Branches
+## Branche
 
 |Name|Description|
 |:-|:-|
 |[master](https://github.com/zlib-ng/minizip-ng/tree/master)|Most recent release.|
-|[develop](https://github.com/zlib-ng/minizip-ng/tree/develop)|Latest development code.|
-|[1.2](https://github.com/zlib-ng/minizip-ng/tree/1.2)|Old changes to original minizip that includes WinZip AES encryption, disk splitting, I/O buffering and some additional fixes. Not ABI compatible with original minizip.|
-|[1.1](https://github.com/zlib-ng/minizip-ng/tree/1.1)|Original minizip as of zlib 1.2.11.|
+
+## Releases
+
+Check release tag.
 
 ## History
 
