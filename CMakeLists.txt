@@ -4,6 +4,8 @@
 #   https://github.com/zlib-ng/minizip-ng
 # Copyright (C) 2016 Matthias Schmieder
 #   schmieder.matthias@gmail.com
+# Modified (C) 2023 Raphae Kim
+#   https://github.com/rageworx/minizip-ng
 
 cmake_minimum_required(VERSION 3.13)
 
@@ -15,8 +17,8 @@ set(SOVERSION "4")
 project(minizip-ng
     VERSION ${VERSION}
     LANGUAGES C
-    DESCRIPTION "Zip manipulation library"
-	HOMEPAGE_URL https://github.com/zlib-ng/minizip-ng/)
+    DESCRIPTION "Zip manipulation library forked (rageworx)"
+	HOMEPAGE_URL https://github.com/rageworx/minizip-ng)
 
 include(CMakeDependentOption)
 include(CheckLibraryExists)
@@ -91,7 +93,7 @@ include(cmake/clone-repo.cmake)
 
 set(STDLIB_DEF)
 set(MINIZIP_DEF)
-set(MINIZIP_INC)
+set(MINIZIP_INC src)
 set(MINIZIP_LIB)
 set(MINIZIP_LBD)
 set(MINIZIP_DEP)
@@ -100,27 +102,27 @@ set(MINIZIP_LFG)
 
 # Initial source files
 set(MINIZIP_SRC
-    mz_crypt.c
-    mz_os.c
-    mz_strm.c
-    mz_strm_buf.c
-    mz_strm_mem.c
-    mz_strm_split.c
-    mz_zip.c
-    mz_zip_rw.c)
+    src/mz_crypt.c
+    src/mz_os.c
+    src/mz_strm.c
+    src/mz_strm_buf.c
+    src/mz_strm_mem.c
+    src/mz_strm_split.c
+    src/mz_zip.c
+    src/mz_zip_rw.c)
 
 # Initial header files
 set(MINIZIP_HDR
-    mz.h
-    mz_os.h
-    mz_crypt.h
-    mz_strm.h
-    mz_strm_buf.h
-    mz_strm_mem.h
-    mz_strm_split.h
-    mz_strm_os.h
-    mz_zip.h
-    mz_zip_rw.h)
+    src/mz.h
+    src/mz_os.h
+    src/mz_crypt.h
+    src/mz_strm.h
+    src/mz_strm_buf.h
+    src/mz_strm_mem.h
+    src/mz_strm_split.h
+    src/mz_strm_os.h
+    src/mz_zip.h
+    src/mz_zip_rw.h)
 
 set(PC_PRIVATE_LIBS)
 
@@ -151,8 +153,8 @@ if(MZ_LIBCOMP)
     if(APPLE)
         # Use Apple libcompression
         list(APPEND MINIZIP_DEF -DHAVE_LIBCOMP)
-        list(APPEND MINIZIP_SRC mz_strm_libcomp.c)
-        list(APPEND MINIZIP_HDR mz_strm_libcomp.h)
+        list(APPEND MINIZIP_SRC src/mz_strm_libcomp.c)
+        list(APPEND MINIZIP_HDR src/mz_strm_libcomp.h)
         list(APPEND MINIZIP_LIB compression)
 
         # Disable zlib as libcompression is preferred
@@ -228,8 +230,8 @@ if(MZ_ZLIB)
         elseif(ZLIB_FOUND)
             list(APPEND MINIZIP_DEP_PKG ZLIB)
         endif()
-        list(APPEND MINIZIP_SRC mz_strm_zlib.c)
-        list(APPEND MINIZIP_HDR mz_strm_zlib.h)
+        list(APPEND MINIZIP_SRC src/mz_strm_zlib.c)
+        list(APPEND MINIZIP_HDR src/mz_strm_zlib.h)
     endif()
 endif()
 
@@ -280,8 +282,8 @@ if(MZ_BZIP2)
     if(MZ_BZIP2)
         list(APPEND MINIZIP_DEP_PKG BZip2)
         list(APPEND MINIZIP_DEF -DHAVE_BZIP2)
-        list(APPEND MINIZIP_SRC mz_strm_bzip.c)
-        list(APPEND MINIZIP_HDR mz_strm_bzip.h)
+        list(APPEND MINIZIP_SRC src/mz_strm_bzip.c)
+        list(APPEND MINIZIP_HDR src/mz_strm_bzip.h)
     endif()
 endif()
 
@@ -326,8 +328,8 @@ if(MZ_LZMA)
     if(MZ_LZMA)
         list(APPEND MINIZIP_DEP_PKG LibLZMA)
         list(APPEND MINIZIP_DEF -DHAVE_LZMA -DLZMA_API_STATIC)
-        list(APPEND MINIZIP_SRC mz_strm_lzma.c)
-        list(APPEND MINIZIP_HDR mz_strm_lzma.h)
+        list(APPEND MINIZIP_SRC src/mz_strm_lzma.c)
+        list(APPEND MINIZIP_HDR src/mz_strm_lzma.h)
     endif()
 endif()
 
@@ -381,8 +383,8 @@ if(MZ_ZSTD)
     if(MZ_ZSTD)
         list(APPEND MINIZIP_DEP_PKG zstd)
         list(APPEND MINIZIP_DEF -DHAVE_ZSTD)
-        list(APPEND MINIZIP_SRC mz_strm_zstd.c)
-        list(APPEND MINIZIP_HDR mz_strm_zstd.h)
+        list(APPEND MINIZIP_SRC src/mz_strm_zstd.c)
+        list(APPEND MINIZIP_HDR src/mz_strm_zstd.h)
     endif()
 endif()
 
@@ -430,7 +432,7 @@ endif()
 # Platform specific
 if(WIN32)
     list(APPEND MINIZIP_DEF -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE)
-    list(APPEND MINIZIP_SRC mz_os_win32.c mz_strm_os_win32.c)
+    list(APPEND MINIZIP_SRC src/mz_os_win32.c src/mz_strm_os_win32.c)
 
     if(MZ_PKCRYPT OR MZ_WZAES)
         if(MZ_OPENSSL)
@@ -441,11 +443,11 @@ if(WIN32)
             check_symbol_exists(BCryptGenRandom "windows.h;bcrypt.h" HAVE_BCRYPT)
             set(CMAKE_REQUIRED_LIBRARIES)
             if (HAVE_BCRYPT)
-                list(APPEND MINIZIP_SRC mz_crypt_winvista.c)
+                list(APPEND MINIZIP_SRC src/mz_crypt_winvista.c)
                 list(APPEND MINIZIP_LIB bcrypt.lib ncrypt.lib)
             endif()
 
-            list(APPEND MINIZIP_SRC mz_crypt_winxp.c)
+            list(APPEND MINIZIP_SRC src/mz_crypt_winxp.c)
             list(APPEND MINIZIP_LIB crypt32.lib)
         endif()
     else()
@@ -456,7 +458,7 @@ if(WIN32)
     set(MZ_ICONV OFF)
 else()
     list(APPEND STDLIB_DEF -D_POSIX_C_SOURCE=200809L)
-    list(APPEND MINIZIP_SRC mz_os_posix.c mz_strm_os_posix.c)
+    list(APPEND MINIZIP_SRC src/mz_os_posix.c src/mz_strm_os_posix.c)
 
     if(MZ_PKCRYPT OR MZ_WZAES)
         if(MZ_OPENSSL)
@@ -478,7 +480,7 @@ else()
                 if(COMMONCRYPTO_FOUND)
                     message(STATUS "Using CommonCrypto")
 
-                    list(APPEND MINIZIP_SRC mz_crypt_apple.c)
+                    list(APPEND MINIZIP_SRC src/mz_crypt_apple.c)
 
                     set(MZ_LIBBSD OFF)
                 else()
@@ -594,32 +596,32 @@ endif()
 # Include traditional PKWare encryption
 if(MZ_PKCRYPT)
     list(APPEND MINIZIP_DEF -DHAVE_PKCRYPT)
-    list(APPEND MINIZIP_SRC mz_strm_pkcrypt.c)
-    list(APPEND MINIZIP_HDR mz_strm_pkcrypt.h)
+    list(APPEND MINIZIP_SRC src/mz_strm_pkcrypt.c)
+    list(APPEND MINIZIP_HDR src/mz_strm_pkcrypt.h)
 endif()
 
 # Include WinZIP AES encryption
 if(MZ_WZAES)
     list(APPEND MINIZIP_DEF -DHAVE_WZAES)
-    list(APPEND MINIZIP_SRC mz_strm_wzaes.c)
-    list(APPEND MINIZIP_HDR mz_strm_wzaes.h)
+    list(APPEND MINIZIP_SRC src/mz_strm_wzaes.c)
+    list(APPEND MINIZIP_HDR src/mz_strm_wzaes.h)
 endif()
 
 # Include compatibility layer
 if(MZ_COMPAT)
-    set(FILE_H "zip.h")
+    set(FILE_H "src/zip.h")
     set(MZ_COMPAT_FILE "MZ_COMPAT_ZIP")
-    configure_file(mz_compat_shim.h.in zip.h)
+    configure_file(src/mz_compat_shim.h.in src/zip.h)
 
-    set(FILE_H "unzip.h")
+    set(FILE_H "src/unzip.h")
     set(MZ_COMPAT_FILE "MZ_COMPAT_UNZIP")
-    configure_file(mz_compat_shim.h.in unzip.h)
+    configure_file(src/mz_compat_shim.h.in src/unzip.h)
 
     if(MZ_COMPAT_VERSION)
         list(APPEND MINIZIP_DEF -DMZ_COMPAT_VERSION=${MZ_COMPAT_VERSION})
     endif()
-    list(APPEND MINIZIP_SRC mz_compat.c)
-    list(APPEND MINIZIP_HDR mz_compat.h ${CMAKE_CURRENT_BINARY_DIR}/zip.h ${CMAKE_CURRENT_BINARY_DIR}/unzip.h)
+    list(APPEND MINIZIP_SRC src/mz_compat.c)
+    list(APPEND MINIZIP_HDR src/mz_compat.h ${CMAKE_CURRENT_BINARY_DIR}/src/zip.h ${CMAKE_CURRENT_BINARY_DIR}/src/unzip.h)
 endif()
 
 # Set compiler options
@@ -739,7 +741,7 @@ endif()
 # Build test executables
 if(MZ_BUILD_TESTS)
     if(MZ_ZLIB AND NOT MZ_LIBCOMP)
-        add_executable(minigzip_cmd minigzip.c)
+        add_executable(minigzip_cmd src/minigzip.c)
         set_target_properties(minigzip_cmd PROPERTIES OUTPUT_NAME minigzip)
         target_compile_definitions(minigzip_cmd PRIVATE ${STDLIB_DEF} ${MINIZIP_DEF})
         target_include_directories(minigzip_cmd PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
@@ -750,7 +752,7 @@ if(MZ_BUILD_TESTS)
         endif()
     endif()
 
-    add_executable(minizip_cmd minizip.c)
+    add_executable(minizip_cmd src/minizip.c)
     set_target_properties(minizip_cmd PROPERTIES OUTPUT_NAME ${MINIZIP_TARGET})
     target_compile_definitions(minizip_cmd PRIVATE ${STDLIB_DEF} ${MINIZIP_DEF})
     target_include_directories(minizip_cmd PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
