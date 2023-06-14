@@ -27,7 +27,7 @@ int32_t minigzip_help(void);
 /***************************************************************************/
 
 int32_t minigzip_banner(void) {
-    printf("Minigzip %s - https://github.com/zlib-ng/minizip-ng\n", MZ_VERSION);
+    printf("Minigzip %s - https://github.com/rageworx/minizip-ng\n", MZ_VERSION);
     printf("---------------------------------------------------\n");
     return MZ_OK;
 }

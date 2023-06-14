@@ -61,6 +61,8 @@ option(MZ_BUILD_TESTS "Builds minizip test executable" OFF)
 option(MZ_BUILD_UNIT_TESTS "Builds minizip unit test project" OFF)
 option(MZ_BUILD_FUZZ_TESTS "Builds minizip fuzzer executables" OFF)
 option(MZ_CODE_COVERAGE "Builds with code coverage flags" OFF)
+# Static build for option
+option(MZ_BUILD_STATIC "Link all binary as static" OFF)
 
 # Backwards compatibility
 if(DEFINED MZ_BUILD_TEST)
@@ -99,6 +101,10 @@ set(MINIZIP_LBD)
 set(MINIZIP_DEP)
 set(MINIZIP_DEP_PKG)
 set(MINIZIP_LFG)
+
+IF(MZ_BUILD_STATIC)
+	set(CMAKE_EXE_LINKER_FLAGS "-static")
+ENDIF(MZ_BUILD_STATIC)
 
 # Initial source files
 set(MINIZIP_SRC
