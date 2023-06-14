@@ -408,7 +408,7 @@ if(MZ_OPENSSL)
     if(OPENSSL_FOUND)
         message(STATUS "Using OpenSSL ${OPENSSL_VERSION}")
 
-        list(APPEND MINIZIP_SRC mz_crypt_openssl.c)
+        list(APPEND MINIZIP_SRC src/mz_crypt_openssl.c)
         list(APPEND MINIZIP_LIB ${OPENSSL_LIBRARIES})
         list(APPEND MINIZIP_LBD ${OPENSSL_LIBRARY_DIRS})
 
